@@ -278,9 +278,15 @@
         [IntPtr]  #_Out_    va_list Arguments
     ) -EntryPoint FormatMessage -SetLastError),
     
+    (func kernel32 GetComputerNameEx ([bool]) @(
+        [UInt32],                    # _In_    COMPUTER_NAME_FORMAT NameType,
+        [System.Text.StringBuilder], # _Out_   LPWSTR               lpBuffer,
+        [UInt32].MakeByRefType()     # _InOut_ LPDWORD              nSize
+    ) -EntryPoint GetComputerNameEx -SetLastError),
+
     (func kernel32 GetCurrentProcess ([IntPtr]) @() -EntryPoint GetCurrentProcess),
 
-    (func kernel32 GetCurrentProcessId ([UInt32]) @() -EntryPoint GetCurrentProcessId),
+    (func kernel32 GetCurrentProcessId ([IntPtr]) @() -EntryPoint GetCurrentProcessId),
 
     (func kernel32 GetCurrentThread ([IntPtr]) @() -EntryPoint GetCurrentThread),
 
@@ -515,6 +521,15 @@
         [Int32].MakeByRefType(),    # _Out_   LPDWORD totalentries
         [Int32].MakeByRefType()     # _Inout_ LPDWORD resume_handle
     ) -EntryPoint NetConnectionEnum),
+
+    (func netapi32 NetDfsEnum ([Int]) @(
+        [String],                 # [in]      LPWSTR  DfsName,
+        [Int32],                  # [in]      DWORD   Level,
+        [Int32],                  # [in]      DWORD   PrefMaxLen,
+        [IntPtr].MakeByRefType(), # [out]     LPBYTE  *Buffer,
+        [Int32].MakeByRefType(),  # [out]     LPDWORD EntriesRead,
+        [Int32].MakeByRefType()   # [in, out] LPDWORD ResumeHandle
+    ) -EntryPoint NetDfsEnum),
 
     (func netapi32 NetFileEnum ([Int32]) @(
         [String],                   # _In_    LMSTR      servername
