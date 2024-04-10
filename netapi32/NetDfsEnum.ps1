@@ -49,7 +49,7 @@
         [String]
         $DfsName,
 
-        [ValidateSet(1, 2, 3, 5, 6, 8, 9)]
+        [ValidateSet(1, 2, 3, 4, 5, 6, 8, 9, 300)]
         [String]
         $Level = 1
     )
@@ -74,6 +74,7 @@
             1   { $DFS_INFO_1::GetSize() }
             2   { $DFS_INFO_2::GetSize() }
             3   { $DFS_INFO_3::GetSize() }
+            4   { $DFS_INFO_4::GetSize() }
             5   { $DFS_INFO_5::GetSize() }
             6   { $DFS_INFO_6::GetSize() }
             7   { $DFS_INFO_7::GetSize() }
@@ -83,6 +84,7 @@
             101 { $DFS_INFO_101::GetSize() }
             102 { $DFS_INFO_102::GetSize() }
             150 { $DFS_INFO_150::GetSize() }
+            300 { $DFS_INFO_300::GetSize() }
         }
 
         # 0 = success
@@ -120,6 +122,39 @@
                         $obj | Add-Member -MemberType NoteProperty -Name EntryPath -Value $DfsInfo.EntryPath
                         $obj | Add-Member -MemberType NoteProperty -Name Comment -Value $DfsInfo.Comment
                         $obj | Add-Member -MemberType NoteProperty -Name State -Value ([DFS_VOLUME_STATE]$DfsInfo.State)
+                        $obj | Add-Member -MemberType NoteProperty -Name NumberOfStorages -Value $DfsInfo.NumberOfStorages
+
+                        $StorageOffset = $DfsInfo.Storage.ToInt64()
+                        $StorageIncrement = $DFS_STORAGE_INFO::GetSize()
+                        $storageList = New-Object -TypeName System.Collections.ArrayList
+
+                        for($j = 1; $j -le $DfsInfo.NumberOfStorages; $j++)
+                        {
+                            $StoragePtr = New-Object -TypeName System.IntPtr -ArgumentList $StorageOffset
+                           
+                            $Storage = $StoragePtr -as $DFS_STORAGE_INFO
+
+                            $storageObj = New-Object -TypeName psobject
+                            $storageObj | Add-Member -MemberType NoteProperty -Name State -Value ([DFS_STORAGE_STATE]$Storage.State)
+                            $storageObj | Add-Member -MemberType NoteProperty -Name ServerName -Value $Storage.ServerName
+                            $storageObj | Add-Member -MemberType NoteProperty -Name ShareName -Value $Storage.ShareName
+
+                            $storageList.Add($storageObj) | Out-Null
+
+                            $StorageOffset += $StorageIncrement
+                        }
+
+                        $obj | Add-Member -MemberType NoteProperty -Name Storage -Value $storageList.ToArray()
+                    }
+                    4
+                    {
+                        $DfsInfo = $NewIntPtr -as $DFS_INFO_4
+                            
+                        $obj | Add-Member -MemberType NoteProperty -Name EntryPath -Value $DfsInfo.EntryPath
+                        $obj | Add-Member -MemberType NoteProperty -Name Comment -Value $DfsInfo.Comment
+                        $obj | Add-Member -MemberType NoteProperty -Name State -Value ([DFS_VOLUME_STATE]$DfsInfo.State)
+                        $obj | Add-Member -MemberType NoteProperty -Name Timeout -Value $DfsInfo.Timeout
+                        $obj | Add-Member -MemberType NoteProperty -Name Guid -Value $DfsInfo.Guid
                         $obj | Add-Member -MemberType NoteProperty -Name NumberOfStorages -Value $DfsInfo.NumberOfStorages
 
                         $StorageOffset = $DfsInfo.Storage.ToInt64()
@@ -262,6 +297,13 @@
                         }
 
                         $obj | Add-Member -MemberType NoteProperty -Name Storage -Value $storageList.ToArray()
+                    }
+                    300
+                    {
+                        $DfsInfo = $NewIntPtr -as $DFS_INFO_300
+                            
+                        $obj | Add-Member -MemberType NoteProperty -Name Flags -Value $DfsInfo.Flags
+                        $obj | Add-Member -MemberType NoteProperty -Name DfsNameTest -Value $DfsInfo.DfsName
                     }
                 }
 
