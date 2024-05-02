@@ -245,8 +245,6 @@
                         {
                             $obj | Add-Member -MemberType NoteProperty -Name SecurityDescriptor -Value $null
                         }
-
-                        $obj | Add-Member -MemberType NoteProperty -Name NumberOfStorages -Value $DfsInfo.NumberOfStorages
                     }
                     9
                     {
