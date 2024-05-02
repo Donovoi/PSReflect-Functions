@@ -49,7 +49,7 @@
         [String]
         $DfsName,
 
-        [ValidateSet(1, 2, 3, 4, 5, 6, 8, 9, 300)]
+        [ValidateSet(1, 2, 3, 4, 5, 6, 8, 9, 200, 300)]
         [String]
         $Level = 1
     )
@@ -83,7 +83,7 @@
             100 { $DFS_INFO_100::GetSize() }
             101 { $DFS_INFO_101::GetSize() }
             102 { $DFS_INFO_102::GetSize() }
-            150 { $DFS_INFO_150::GetSize() }
+            200 { $DFS_INFO_200::GetSize() }
             300 { $DFS_INFO_300::GetSize() }
         }
 
@@ -261,7 +261,7 @@
                         $obj | Add-Member -MemberType NoteProperty -Name State -Value ([DFS_VOLUME_STATE]$DfsInfo.State)
                         $obj | Add-Member -MemberType NoteProperty -Name Timeout -Value $DfsInfo.Timeout
                         $obj | Add-Member -MemberType NoteProperty -Name Guid -Value $DfsInfo.Guid
-                        $obj | Add-Member -MemberType NoteProperty -Name PropertyFlags -Value $DfsInfo.PropertyFlags
+                        $obj | Add-Member -MemberType NoteProperty -Name PropertyFlags -Value ([DFS_PROPERTY_FLAG]$DfsInfo.PropertyFlags)
                         $obj | Add-Member -MemberType NoteProperty -Name MetadataSize -Value $DfsInfo.MetadataSize
                         $obj | Add-Member -MemberType NoteProperty -Name SecurityDescriptorLength -Value $DfsInfo.SecurityDescriptorLength
 
@@ -298,12 +298,18 @@
 
                         $obj | Add-Member -MemberType NoteProperty -Name Storage -Value $storageList.ToArray()
                     }
+                    200
+                    {
+                        $DfsInfo = $NewIntPtr -as $DFS_INFO_200
+
+                        $obj | Add-Member -MemberType NoteProperty -Name FtDfsName -Value $DfsInfo.FtDfsName
+                    }
                     300
                     {
                         $DfsInfo = $NewIntPtr -as $DFS_INFO_300
                             
-                        $obj | Add-Member -MemberType NoteProperty -Name Flags -Value $DfsInfo.Flags
-                        $obj | Add-Member -MemberType NoteProperty -Name DfsNameTest -Value $DfsInfo.DfsName
+                        $obj | Add-Member -MemberType NoteProperty -Name Flags -Value ([DFS_VOLUME_FLAVOR]$DfsInfo.Flags)
+                        $obj | Add-Member -MemberType NoteProperty -Name StdDfsName -Value $DfsInfo.DfsName
                     }
                 }
 
