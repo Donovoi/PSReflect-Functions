@@ -23,7 +23,7 @@
 
     Author: Jared Atkinson (@jaredcatkinson)
     License: BSD 3-Clause  
-    Required Dependencies: PSReflect, DFS_INFO_1, DFS_INFO_2, DFS_INFO_3, DFS_INFO_5, DFS_VOLUME_STATE
+    Required Dependencies: PSReflect, DFS_INFO_1, DFS_INFO_2, DFS_INFO_3, DFS_INFO_5, DFS_VOLUME_STATE, NetApiFreeBuffer
     Optional Dependencies: None
 
     (func netapi32 NetDfsEnum ([Int]) @(
@@ -80,9 +80,6 @@
             7   { $DFS_INFO_7::GetSize() }
             8   { $DFS_INFO_8::GetSize() }
             9   { $DFS_INFO_9::GetSize() }
-            100 { $DFS_INFO_100::GetSize() }
-            101 { $DFS_INFO_101::GetSize() }
-            102 { $DFS_INFO_102::GetSize() }
             200 { $DFS_INFO_200::GetSize() }
             300 { $DFS_INFO_300::GetSize() }
         }
@@ -96,7 +93,6 @@
                 $NewIntPtr = New-Object System.Intptr -ArgumentList $Offset
                 
                 $obj = New-Object -TypeName psobject
-                $obj | Add-Member -MemberType NoteProperty -Name DfsName -Value $DfsName
                 
                 # grab the appropriate result structure
                 Switch ($Level) {
@@ -302,14 +298,14 @@
                     {
                         $DfsInfo = $NewIntPtr -as $DFS_INFO_200
 
-                        $obj | Add-Member -MemberType NoteProperty -Name FtDfsName -Value $DfsInfo.FtDfsName
+                        $obj | Add-Member -MemberType NoteProperty -Name DfsName -Value $DfsInfo.FtDfsName
                     }
                     300
                     {
                         $DfsInfo = $NewIntPtr -as $DFS_INFO_300
                             
                         $obj | Add-Member -MemberType NoteProperty -Name Flags -Value ([DFS_VOLUME_FLAVOR]$DfsInfo.Flags)
-                        $obj | Add-Member -MemberType NoteProperty -Name StdDfsName -Value $DfsInfo.DfsName
+                        $obj | Add-Member -MemberType NoteProperty -Name DfsName -Value $DfsInfo.DfsName
                     }
                 }
 
