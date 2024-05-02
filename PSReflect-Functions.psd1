@@ -227,6 +227,7 @@ FunctionsToExport = @(
     'Get-AccessToken',
     'Get-ArpCache',
     'Get-Atom',
+    'Get-DfsShare',
     'Get-DigitalSignature',
     'Get-LogonSession',
     'Get-LogonSessionImproved',
