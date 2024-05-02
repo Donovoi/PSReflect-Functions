@@ -11,9 +11,21 @@
         [String]
         $Level = 1
     )
-
-    foreach($root in (NetDfsEnum -DfsName $Server -Level 300))
+    
+    try
     {
-        NetDfsEnum -DfsName $root.DfsName -Level $Level
+        $DfsRoot = NetDfsEnum -DfsName $Server -Level 300 -ErrorAction Stop
     }
+    catch
+    {
+        $DfsRoot = NetDfsEnum -DfsName $Server -Level 200
+    }
+    finally
+    {
+        foreach($root in $DfsRoot)
+        {
+            NetDfsEnum -DfsName $root.DfsName -Level $Level
+        }
+    }
+    
 }

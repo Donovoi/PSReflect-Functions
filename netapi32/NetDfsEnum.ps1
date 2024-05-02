@@ -318,7 +318,7 @@
             NetApiBufferFree -Buffer $Buffer
         }
         else {
-            Write-Verbose "[NetDfsEnum] Error: $(([ComponentModel.Win32Exception] $Result).Message)"
+            Write-Error "[NetDfsEnum] Error: $(([ComponentModel.Win32Exception] $Result).Message)"
         }
     }
 }
