@@ -224,6 +224,7 @@ FunctionsToExport = @(
     'WTSOpenServerEx',
     'WTSQuerySessionInformation',
     'WTSQueryUserToken',
+    'Collect-ShareInfo',
     'Get-AccessToken',
     'Get-ArpCache',
     'Get-Atom',
